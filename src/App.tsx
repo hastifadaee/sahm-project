@@ -1,26 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import FormBuilder from "./FormBuilder";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+            <FormBuilder Form={[{
+                type: 'text',
+                inputOptions: {label: 'name', size: 'small', fullWidth: true},
+                controlOptions: {name: 'name'},
+                gridOptions: {item: true, xs: 5}
+            }, {
+                type: 'text',
+                inputOptions: {label: 'family', size: 'small', fullWidth: true},
+                controlOptions: {name: 'family'},
+                gridOptions: {item: true, xs: 5}
+            }, {
+                type: 'select',
+                inputOptions: { size: 'small'},
+                controlOptions: {name: 'select', defaultValue: 'surush'},
+                gridOptions: {item: true, xs: 12},
+                menuOptions: {},
+                options: ['hasti', 'surush']
+            }]}/>
+    );
 }
 
 export default App;
