@@ -1,4 +1,4 @@
-import {UseControllerProps} from "react-hook-form/dist/types";
+import {FieldValues, UseControllerProps, UseFormReturn} from "react-hook-form/dist/types";
 import {SelectProps, GridProps, Grid, Select, MenuItem, MenuItemProps} from "@mui/material";
 import {useController} from "react-hook-form";
 
@@ -7,12 +7,13 @@ const CostumeSelect = ({
                            GridProps,
                            ControlProps,
                            MenuOptions,
-                           Options
-                       }: { SelectProps: SelectProps, GridProps: GridProps, ControlProps: UseControllerProps, MenuOptions: MenuItemProps, Options: string[] }) => {
-    const {field, fieldState} = useController({...ControlProps})
+                           Options ,
+                           UseFormReturn
+                       }: { SelectProps: SelectProps, GridProps: GridProps, ControlProps: UseControllerProps, MenuOptions: MenuItemProps, Options: string[] ,UseFormReturn: UseFormReturn<FieldValues, any, undefined> }) => {
+    const {field, fieldState} = useController({...ControlProps, control:UseFormReturn.control})
     return (
         <Grid {...GridProps}>
-            <Select {...SelectProps} onChange={field.onChange} value={field.value}>
+            <Select {...SelectProps} onChange={field.onChange} value={field.value ?? ''}>
                 {
                     Options.map((item) => {
                         return (

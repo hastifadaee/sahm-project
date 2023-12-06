@@ -1,8 +1,22 @@
-import {Box, Container, Grid, GridProps, MenuItemProps, SelectProps, TextFieldProps} from "@mui/material";
-import {UseControllerProps} from "react-hook-form/dist/types";
+import {
+    Button,
+    Container,
+    Grid,
+    GridProps,
+    MenuItemProps,
+    SelectProps,
+    TextFieldProps,
+} from "@mui/material";
+import {
+    FieldValues,
+    UseControllerProps,
+    UseFormReturn
+} from "react-hook-form/dist/types";
 import CostumeTextField from "./CostumeTextField";
 import CostumeSelect from "./CostumeSelect";
-import {useForm} from "react-hook-form";
+import PhoneNumberTextField from "./PhoneNumberTextField";
+import CostumeOtpInput from "./CostumeOtpInput";
+import {MuiOtpInputProps} from "mui-one-time-password-input";
 
 type TextOptions = {
     type: 'text',
@@ -14,12 +28,20 @@ type SelectOptions = {
     menuOptions: MenuItemProps,
     options: string[]
 }
-type FormBuilder = {
-    controlOptions: UseControllerProps,
+type PhoneTextField = {
+    type: 'phone',
+    inputOptions: TextFieldProps,
+}
+type OtpInput = {
+    type: 'otp',
+    otpInputOptions : MuiOtpInputProps
+}
+type UseControlProps = Omit<UseControllerProps, 'control'>
+export type FormItem = {
+    controlOptions: UseControlProps,
     gridOptions: GridProps
-} & (SelectOptions | TextOptions)
-const FormBuilder = ({Form}: { Form: FormBuilder[] }) => {
-    const {control} = useForm()
+} & (SelectOptions | TextOptions | PhoneTextField | OtpInput)
+const FormBuilder = ({Form, UseFormReturn}: { Form: FormItem[], UseFormReturn: UseFormReturn<FieldValues, any, undefined> }) => {
     // const getFields = (item : FormBuilder)=>{
     //     // @ts-ignore
     //     // const Fields ={
@@ -29,27 +51,34 @@ const FormBuilder = ({Form}: { Form: FormBuilder[] }) => {
     //     return Fields[item.type]
     // }
     return (
-        <Box component={'form'} mt={4}>
-            <Container>
-                <Grid container width={'100%'} rowGap={1} justifyContent={'space-between'}>
-                    {
-                        Form.map((item, index) => {
-                            item.controlOptions = {...item.controlOptions, control: control}
-                            if (item.type === 'text') {
-                                return <CostumeTextField key={index} GridProps={item.gridOptions}
-                                                         TextFieldProps={item.inputOptions}
-                                                         ControlProps={item.controlOptions}/>
-                            } else if (item.type === 'select') {
-                                return <CostumeSelect key={index} Options={item.options} MenuOptions={item.menuOptions}
-                                                      SelectProps={item.inputOptions} GridProps={item.gridOptions}
-                                                      ControlProps={item.controlOptions}/>
-                            }
-                            // return getFields(item)
-                        })
-                    }
-                </Grid>
-            </Container>
-        </Box>
+        <Container>
+            <Grid container width={'100%'} rowGap={1} justifyContent={'space-between'}>
+                {
+                    Form.map((item, index) => {
+                        if (item.type === 'text') {
+                            return <CostumeTextField UseFormReturn={UseFormReturn} key={index} GridProps={item.gridOptions}
+                                                     TextFieldProps={item.inputOptions}
+                                                     ControlProps={item.controlOptions}/>
+                        } else if (item.type === 'select') {
+                            return <CostumeSelect UseFormReturn={UseFormReturn} key={index} Options={item.options}
+                                                  MenuOptions={item.menuOptions}
+                                                  SelectProps={item.inputOptions} GridProps={item.gridOptions}
+                                                  ControlProps={item.controlOptions}/>
+                        } else if (item.type === 'phone') {
+                            return <PhoneNumberTextField key={index} UseFormReturn={UseFormReturn} TextFieldProps={item.inputOptions}
+                                                         ControlProps={item.controlOptions}
+                                                         GridProps={item.gridOptions}/>
+                        }else if(item.type === 'otp'){
+                            return <CostumeOtpInput key={index} UseFormReturn={UseFormReturn} MuiOtpProps={item.otpInputOptions} ControlProps={item.controlOptions}/>
+                        }
+                        // return getFields(item)
+                    })
+                }
+            </Grid>
+            <Grid item xs={12}>
+                <Button fullWidth={true} type={'submit'}>submit</Button>
+            </Grid>
+        </Container>
     )
 }
 export default FormBuilder;
